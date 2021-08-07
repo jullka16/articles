@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
-class ArticleFeature {
+class ArticleFeature : BaseUITest() {
     val activityRule = ActivityTestRule(MainActivity::class.java)
         @Rule get
 
