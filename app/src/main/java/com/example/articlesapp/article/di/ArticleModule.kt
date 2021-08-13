@@ -1,5 +1,6 @@
 package com.example.articlesapp.article.di
 
+import com.example.articlesapp.BuildConfig
 import com.example.articlesapp.article.network.ArticleAPI
 import com.jakewharton.espresso.OkHttp3IdlingResource
 import dagger.Module
@@ -28,7 +29,7 @@ class ArticleModule {
 
     @Provides
     fun retrofit() = Retrofit.Builder()
-        .baseUrl("http://192.168.1.23:3000/")
+        .baseUrl(BuildConfig.SERVER_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

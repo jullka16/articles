@@ -27,6 +27,20 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 }
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('/Users/juliasotola/Documents/articles_app_key2')
+            storePassword 'Pass1234'
+            keyPassword 'Pass1234'
+            keyAlias 'articles_app_key2'
+        }
+        release {
+            storeFile file('/Users/juliasotola/Documents/articles_app_key2')
+            storePassword 'Pass1234'
+            keyAlias 'articles_app_key2'
+            keyPassword 'Pass1234'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -38,13 +52,16 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         debug {
             testCoverageEnabled true
+            buildConfigField "String", "SERVER_URL", '"http://127.0.0.1:8080"'
         }
         release {
+            buildConfigField "String", "SERVER_URL", '"http://192.168.1.23:3000/"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -89,6 +106,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
     implementation "androidx.navigation:navigation-fragment-ktx:2.4.0-alpha05"
     implementation "androidx.navigation:navigation-ui-ktx:2.4.0-alpha05"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
 
     testImplementation 'junit:junit:4.13.1'
@@ -104,6 +122,5 @@ dependencies {
     androidTestImplementation('com.schibsted.spain:barista:3.6.0') {
         exclude group: 'org.jetbrains.kotlin' // Only if you already use Kotlin in your project
     }
-
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
+    androidTestImplementation 'com.squareup.okhttp3:mockwebserver:4.3.0'
 }

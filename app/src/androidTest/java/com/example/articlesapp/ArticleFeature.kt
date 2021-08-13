@@ -7,8 +7,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.example.articlesapp.article.view.ArticleFragment
 import com.schibsted.spain.barista.assertion.BaristaRecyclerViewAssertions.assertRecyclerViewItemCount
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import okhttp3.mockwebserver.MockResponse
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -30,6 +32,12 @@ class ArticleFeature : BaseUITest() {
 
     @Test
     fun displayListOfArticles() {
+        mockServer.enqueue(
+            MockResponse().setResponseCode(200)
+                .setBody("[{\"title\":\"Title 1\"  },  {    \"title\": \"Title2\"  },  {    \"title\": \"Title 3\"  },  {    \"title\": \"Title4\"  }  ]")
+        )
+        //Workaround for not getting the mocked response on time
+        routeToFragment()
         assertRecyclerViewItemCount(R.id.articlesList, 4)
 
         onView(
@@ -40,6 +48,13 @@ class ArticleFeature : BaseUITest() {
         ).check(matches(withText("Title 1")))
             .check(matches(isDisplayed()))
     }
+
+    private fun routeToFragment() = activityRule
+        .activity
+        .supportFragmentManager
+        .beginTransaction()
+        .replace(R.id.mainContainer, ArticleFragment.newInstance())
+        .commit()
 
     private fun nthChildOf(parentMatcher: Matcher<View>, childPosition: Int): Matcher<View> {
         return object : TypeSafeMatcher<View>() {
