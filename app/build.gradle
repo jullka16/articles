@@ -8,6 +8,12 @@ plugins {
     id 'androidx.navigation.safeargs'
 }
 
+tasks.withType(Test.class).configureEach {
+    jacoco {
+        excludes = ["*"]
+    }
+}
+
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
 
     reports {
