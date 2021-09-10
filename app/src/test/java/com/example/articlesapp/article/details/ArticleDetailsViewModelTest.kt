@@ -3,6 +3,7 @@ package com.example.articlesapp.article.details
 import com.example.articlesapp.article.network.Article
 import com.example.articlesapp.article.network.ArticleRepository
 import com.example.articlesapp.utils.BaseUnitTest
+import com.example.articlesapp.utils.captureValues
 import com.example.articlesapp.utils.getValueForTest
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
@@ -47,6 +48,39 @@ class ArticleDetailsViewModelTest : BaseUnitTest() {
         viewModel.getArticleDetails(id)
 
         assertEquals(expectedError, viewModel.articleDetails.getValueForTest())
+    }
+
+    @Test
+    fun testShowProgressBarWhenLoading() = runBlockingTest {
+        mockSuccessfulCase()
+
+        viewModel.loader.captureValues {
+            viewModel.getArticleDetails(id)
+            viewModel.articleDetails.getValueForTest()
+            assertEquals(true, values[0])
+        }
+    }
+
+    @Test
+    fun testHideProgressBarWhenSuccesfulFetch() = runBlockingTest {
+        mockSuccessfulCase()
+
+        viewModel.loader.captureValues {
+            viewModel.getArticleDetails(id)
+            viewModel.articleDetails.getValueForTest()
+            assertEquals(false, values.last())
+        }
+    }
+
+    @Test
+    fun testHideProgressBarOnError() = runBlockingTest {
+        mockErrorCase()
+
+        viewModel.loader.captureValues {
+            viewModel.getArticleDetails(id)
+            viewModel.articleDetails.getValueForTest()
+            assertEquals(false, values.last())
+        }
     }
 
     private suspend fun mockSuccessfulCase() {
