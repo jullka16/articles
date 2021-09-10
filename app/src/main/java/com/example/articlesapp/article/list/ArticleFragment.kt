@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import com.example.articlesapp.R
 import com.example.articlesapp.article.network.Article
+import com.example.articlesapp.databinding.FragmentArticleBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -22,39 +22,52 @@ class ArticleFragment : Fragment() {
     @Inject
     lateinit var factory: ArticleViewModelFactory
 
+    private var _binding: FragmentArticleBinding? = null
+    private val binding
+        get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_article, container, false)
+        _binding = FragmentArticleBinding.inflate(inflater, container, false)
 
         setupViewModel()
-        observeArticles(view)
+        observeArticles()
+        observeLoader()
 
-        return view
+        return binding.root
     }
 
-    private fun observeArticles(view: View?) {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun observeArticles() {
         viewModel.articles.observe(this as LifecycleOwner) { articles ->
             if (articles.getOrNull() != null) {
-                setupList(view, articles.getOrNull()!!)
+                setupList(articles.getOrNull()!!)
             } else {
                 //TODO
             }
         }
     }
 
+    private fun observeLoader() {
+        viewModel.loader.observe(this as LifecycleOwner) { show ->
+            binding.articleLoader.isVisible = show
+        }
+    }
+
     private fun setupList(
-        view: View?,
         articles: List<Article>
     ) {
-        if (view is RecyclerView) {
-            with(view) {
-                adapter = ArticleRecyclerViewAdapter(articles) { id ->
-                    val action =
-                        ArticleFragmentDirections.actionArticleFragmentToArticleDetailsFragment(id)
-                    findNavController().navigate(action)
-                }
+        with(binding.articlesList) {
+            adapter = ArticleRecyclerViewAdapter(articles) { id ->
+                val action =
+                    ArticleFragmentDirections.actionArticleFragmentToArticleDetailsFragment(id)
+                findNavController().navigate(action)
             }
         }
     }

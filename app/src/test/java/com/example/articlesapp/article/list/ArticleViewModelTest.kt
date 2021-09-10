@@ -3,6 +3,7 @@ package com.example.articlesapp.article.list
 import com.example.articlesapp.article.network.Article
 import com.example.articlesapp.article.network.ArticleRepository
 import com.example.articlesapp.utils.BaseUnitTest
+import com.example.articlesapp.utils.captureValues
 import com.example.articlesapp.utils.getValueForTest
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
@@ -42,6 +43,37 @@ class ArticleViewModelTest : BaseUnitTest() {
         val viewModel = mockErrorCase()
 
         assertEquals(exception, viewModel.articles.getValueForTest()?.exceptionOrNull())
+    }
+
+    @Test
+    fun testShowProgressBarWhileLoading() = runBlockingTest {
+        val viewModel = mockSuccessfulCase()
+
+        viewModel.loader.captureValues {
+            viewModel.articles.getValueForTest()
+
+            assertEquals(true, values[0])
+        }
+    }
+
+    @Test
+    fun testHideProgressBarAfterSuccessfulFetch() = runBlockingTest {
+        val viewModel = mockSuccessfulCase()
+
+        viewModel.loader.captureValues {
+            viewModel.articles.getValueForTest()
+            assertEquals(false, values.last())
+        }
+    }
+
+    @Test
+    fun testHideProgressBarAfterError() = runBlockingTest {
+        val viewModel = mockErrorCase()
+
+        viewModel.loader.captureValues {
+            viewModel.articles.getValueForTest()
+            assertEquals(false, values.last())
+        }
     }
 
 
