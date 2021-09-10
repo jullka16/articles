@@ -14,4 +14,12 @@ class ArticleService @Inject constructor(private val api: ArticleAPI) {
         }
     }
 
+    suspend fun fetchArticleById(id: String): Flow<Result<Article>> {
+        return flow {
+            emit(Result.success(api.fetchArticleById(id)))
+        }.catch {
+            emit(Result.failure(it))
+        }
+    }
+
 }

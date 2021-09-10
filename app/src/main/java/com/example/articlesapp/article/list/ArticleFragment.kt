@@ -1,4 +1,4 @@
-package com.example.articlesapp.article.view
+package com.example.articlesapp.article.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.articlesapp.R
 import com.example.articlesapp.article.network.Article
@@ -49,7 +50,11 @@ class ArticleFragment : Fragment() {
     ) {
         if (view is RecyclerView) {
             with(view) {
-                adapter = MyArticleRecyclerViewAdapter(articles)
+                adapter = ArticleRecyclerViewAdapter(articles) { id ->
+                    val action =
+                        ArticleFragmentDirections.actionArticleFragmentToArticleDetailsFragment(id)
+                    findNavController().navigate(action)
+                }
             }
         }
     }

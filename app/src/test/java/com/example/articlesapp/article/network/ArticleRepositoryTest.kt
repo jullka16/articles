@@ -1,8 +1,5 @@
-package com.example.articlesapp.article
+package com.example.articlesapp.article.network
 
-import com.example.articlesapp.article.network.Article
-import com.example.articlesapp.article.network.ArticleRepository
-import com.example.articlesapp.article.network.ArticleService
 import com.example.articlesapp.utils.BaseUnitTest
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
@@ -18,6 +15,7 @@ class ArticleRepositoryTest : BaseUnitTest() {
 
     private val service: ArticleService = mock()
     private val articles: List<Article> = mock()
+    private val article: Article = mock()
     private val exception = RuntimeException(ERROR_MESSAGE)
 
     @Test
@@ -42,11 +40,39 @@ class ArticleRepositoryTest : BaseUnitTest() {
         assertEquals(exception, repository.getArticles().first().exceptionOrNull())
     }
 
+    @Test
+    fun testGetArticleDetails() = runBlockingTest {
+        val repository = mockSuccessfulCase()
+        repository.getArticleDetails(ARTICLE_ID)
+
+        verify(service, times(1)).fetchArticleById(ARTICLE_ID)
+    }
+
+    @Test
+    fun testIfArticleByIdIsEmittedFromRepository() = runBlockingTest {
+        val repository = mockSuccessfulCase()
+
+        assertEquals(article, repository.getArticleDetails(ARTICLE_ID).first().getOrNull())
+    }
+
+    @Test
+    fun testIfErrorIsEmittedFromServiceWhenFetchingArticleById() = runBlockingTest {
+        val repository = mockErrorCase()
+        repository.getArticleDetails(ARTICLE_ID)
+
+        assertEquals(exception, repository.getArticleDetails(ARTICLE_ID).first().exceptionOrNull())
+    }
+
 
     private suspend fun mockSuccessfulCase(): ArticleRepository {
         whenever(service.fetchArticles()).thenReturn(
             flow {
                 emit(Result.success(articles))
+            }
+        )
+        whenever(service.fetchArticleById(ARTICLE_ID)).thenReturn(
+            flow {
+                emit(Result.success(article))
             }
         )
         return ArticleRepository(service)
@@ -58,10 +84,16 @@ class ArticleRepositoryTest : BaseUnitTest() {
                 emit(Result.failure<List<Article>>(exception))
             }
         )
+        whenever(service.fetchArticleById(ARTICLE_ID)).thenReturn(
+            flow {
+                emit(Result.failure<Article>(exception))
+            }
+        )
         return ArticleRepository(service)
     }
 
     companion object {
         private const val ERROR_MESSAGE = "500 internal error"
+        private const val ARTICLE_ID = "1"
     }
 }
