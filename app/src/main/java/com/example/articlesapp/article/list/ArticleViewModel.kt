@@ -1,4 +1,4 @@
-package com.example.articlesapp.article.view
+package com.example.articlesapp.article.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData

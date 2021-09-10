@@ -5,4 +5,6 @@ import javax.inject.Inject
 
 class ArticleRepository @Inject constructor(private val service: ArticleService) {
     suspend fun getArticles(): Flow<Result<List<Article>>> = service.fetchArticles()
+
+    suspend fun getArticleDetails(id: String): Flow<Result<Article>> = service.fetchArticleById(id)
 }

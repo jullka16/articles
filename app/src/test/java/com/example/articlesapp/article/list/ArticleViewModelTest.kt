@@ -1,8 +1,7 @@
-package com.example.articlesapp.article
+package com.example.articlesapp.article.list
 
 import com.example.articlesapp.article.network.Article
 import com.example.articlesapp.article.network.ArticleRepository
-import com.example.articlesapp.article.view.ArticleViewModel
 import com.example.articlesapp.utils.BaseUnitTest
 import com.example.articlesapp.utils.getValueForTest
 import com.nhaarman.mockitokotlin2.mock
@@ -24,7 +23,7 @@ class ArticleViewModelTest : BaseUnitTest() {
     private val error = Result.failure<List<Article>>(exception)
 
     @Test
-    fun testGetPlaylistFromRepository() = runBlockingTest {
+    fun testGetArticlesFromRepository() = runBlockingTest {
         val viewModel = mockSuccessfulCase()
         viewModel.articles.getValueForTest()
 
