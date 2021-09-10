@@ -1,11 +1,14 @@
 package com.example.articlesapp
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.articlesapp.article.di.idlingResource
 import com.schibsted.spain.barista.assertion.BaristaRecyclerViewAssertions.assertRecyclerViewItemCount
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,5 +33,16 @@ class ArticleFeature : BaseUITest() {
             )
         ).check(matches(withText("Title 1")))
             .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun displaysLoaderWhileFetchingArticles() {
+        IdlingRegistry.getInstance().unregister(idlingResource)
+        assertDisplayed(R.id.articleLoader)
+    }
+
+    @Test
+    fun hidesLoaderWhenArticlesFetched() {
+        assertNotDisplayed(R.id.articleLoader)
     }
 }
