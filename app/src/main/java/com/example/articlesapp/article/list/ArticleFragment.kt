@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.articlesapp.article.network.Article
 import com.example.articlesapp.databinding.FragmentArticleBinding
+import com.example.articlesapp.tools.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,6 +22,9 @@ class ArticleFragment : Fragment() {
 
     @Inject
     lateinit var factory: ArticleViewModelFactory
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
 
     private var _binding: FragmentArticleBinding? = null
     private val binding
@@ -64,7 +68,7 @@ class ArticleFragment : Fragment() {
         articles: List<Article>
     ) {
         with(binding.articlesList) {
-            adapter = ArticleRecyclerViewAdapter(articles) { id ->
+            adapter = ArticleRecyclerViewAdapter(articles, imageLoader) { id ->
                 val action =
                     ArticleFragmentDirections.actionArticleFragmentToArticleDetailsFragment(id)
                 findNavController().navigate(action)
