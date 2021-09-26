@@ -3,10 +3,13 @@ package com.example.articlesapp
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.articlesapp.article.di.idlingResource
+import com.schibsted.spain.barista.assertion.BaristaRecyclerViewAssertions
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
 import com.schibsted.spain.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import org.hamcrest.CoreMatchers
@@ -46,6 +49,21 @@ class ArticleDetailsFeature : BaseUITest() {
         navigateToArticleDetails(0)
 
         assertNotDisplayed(R.id.articleDetailsLoader)
+    }
+
+    @Test
+    fun checkIfBackButtonDisplayed() {
+        navigateToArticleDetails(0)
+
+        assertDisplayed(withContentDescription("Navigate up"))
+    }
+
+    @Test
+    fun checkIfBackButtonPressedAppGoesBackToList() {
+        navigateToArticleDetails(0)
+        onView(withContentDescription("Navigate up")).perform(click())
+
+        BaristaRecyclerViewAssertions.assertRecyclerViewItemCount(R.id.articlesList, 4)
     }
 
     private fun navigateToArticleDetails(position: Int) {
