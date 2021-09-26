@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.example.articlesapp.databinding.FragmentArticleDetailsBinding
+import com.example.articlesapp.tools.ImageLoader
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -19,6 +20,9 @@ class ArticleDetailsFragment : Fragment() {
 
     @Inject
     lateinit var factory: ArticleDetailsViewModelFactory
+
+    @Inject
+    lateinit var imageLoader: ImageLoader
 
     private var _binding: FragmentArticleDetailsBinding? = null
     private val binding get() = _binding!!
@@ -56,8 +60,13 @@ class ArticleDetailsFragment : Fragment() {
     private fun observeArticleDetails() {
         viewModel.articleDetails.observe(this as LifecycleOwner) { article ->
             if (article.isSuccess) {
-                binding.articleTitle.text = article.getOrNull()?.title
-                binding.articleDetails.text = article.getOrNull()?.body
+                article.getOrNull()?.apply {
+                    binding.articleTitle.text = title
+                    binding.articleDetails.text = body
+                    context?.let {
+                        imageLoader.load(it, image, binding.articleImage)
+                    }
+                }
             }
         }
     }

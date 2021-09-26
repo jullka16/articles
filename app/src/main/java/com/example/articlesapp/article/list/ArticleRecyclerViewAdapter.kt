@@ -2,15 +2,17 @@ package com.example.articlesapp.article.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.articlesapp.article.network.Article
 import com.example.articlesapp.databinding.ItemArticleBinding
-
+import com.example.articlesapp.tools.ImageLoader
 
 class ArticleRecyclerViewAdapter(
     private val articles: List<Article>,
+    private val imageLoader: ImageLoader,
     private val listener: (String) -> Unit
 ) : RecyclerView.Adapter<ArticleRecyclerViewAdapter.ViewHolder>() {
 
@@ -28,9 +30,13 @@ class ArticleRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val article = articles[position]
-        holder.title.text = article.title
-        holder.root.setOnClickListener {
-            listener(article.id)
+        holder.apply {
+            title.text = article.title
+            subtitle.text = article.subtitle
+            imageLoader.load(itemView.context, article.image, image)
+            root.setOnClickListener {
+                listener(article.id)
+            }
         }
     }
 
@@ -39,7 +45,9 @@ class ArticleRecyclerViewAdapter(
     inner class ViewHolder(binding: ItemArticleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val title: TextView = binding.articleTitle
-        val root: LinearLayout = binding.root
+        val subtitle: TextView = binding.articleSubtitle
+        val image: ImageView = binding.articleImage
+        val root: ConstraintLayout = binding.root
     }
 
 }

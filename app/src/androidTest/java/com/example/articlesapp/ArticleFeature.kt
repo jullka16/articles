@@ -26,13 +26,42 @@ class ArticleFeature : BaseUITest() {
     fun displayListOfArticles() {
         assertRecyclerViewItemCount(R.id.articlesList, 4)
 
+    }
+
+    @Test
+    fun displayListOfArticlesTitle() {
         onView(
             allOf(
                 withId(R.id.articleTitle),
                 isDescendantOfA(nthChildOf(withId(R.id.articlesList), 0))
             )
-        ).check(matches(withText("Title 1")))
+        ).check(matches(withText("Newcastle goalkeeper Karl Darlow urges players to get vaccinated for Covid-19")))
             .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun displayListOfArticlesSubtitle() {
+        assertRecyclerViewItemCount(R.id.articlesList, 4)
+
+        onView(
+            allOf(
+                withId(R.id.articleSubtitle),
+                isDescendantOfA(nthChildOf(withId(R.id.articlesList), 0))
+            )
+        ).check(matches(withText("Newcastle United's Karl Darlow has urged footballers to go and get the jab after he recovered from a serious bout of Covid-19.")))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun displayListOfArticlesImage() {
+        assertRecyclerViewItemCount(R.id.articlesList, 4)
+
+        onView(
+            allOf(
+                withId(R.id.articleImage),
+                isDescendantOfA(nthChildOf(withId(R.id.articlesList), 0))
+            )
+        ).check(matches(isDisplayed()))
     }
 
     @Test
