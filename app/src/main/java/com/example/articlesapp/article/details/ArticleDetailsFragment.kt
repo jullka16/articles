@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -40,10 +41,15 @@ class ArticleDetailsFragment : Fragment() {
             val id = args.id
             viewModel.getArticleDetails(id)
         }
+        setupToolbar()
         observeArticleDetails()
         observeLoader()
 
         return binding.root
+    }
+
+    private fun setupToolbar() {
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onDestroyView() {

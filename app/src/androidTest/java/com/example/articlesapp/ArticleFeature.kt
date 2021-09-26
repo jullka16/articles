@@ -74,4 +74,5 @@ class ArticleFeature : BaseUITest() {
     fun hidesLoaderWhenArticlesFetched() {
         assertNotDisplayed(R.id.articleLoader)
     }
+
 }
